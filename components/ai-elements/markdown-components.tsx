@@ -425,7 +425,7 @@ export const Table: React.FC<{
   children?: React.ReactNode;
   className?: string;
 }> = ({ children, className }) => (
-  <div className={cn('my-4 border border-border rounded-lg overflow-hidden bg-card dark:border-border/60 dark:bg-muted/20', className)}>
+  <div className={cn('my-4 border border-border rounded-lg overflow-hidden bg-card dark:border-white/15 dark:bg-black/30', className)}>
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         {children}
@@ -438,7 +438,7 @@ export const TableHead: React.FC<{
   children?: React.ReactNode;
   className?: string;
 }> = ({ children, className }) => (
-  <thead className={cn('bg-muted/50 border-b dark:bg-muted/40 dark:border-b-border/50', className)}>
+  <thead className={cn('bg-muted/50 border-b dark:bg-black/40 dark:border-b-white/10', className)}>
     {children}
   </thead>
 );
@@ -447,7 +447,7 @@ export const TableBody: React.FC<{
   children?: React.ReactNode;
   className?: string;
 }> = ({ children, className }) => (
-  <tbody className={cn('divide-y', className)}>
+  <tbody className={cn('divide-y dark:divide-white/10', className)}>
     {children}
   </tbody>
 );
@@ -456,7 +456,7 @@ export const TableRow: React.FC<{
   children?: React.ReactNode;
   className?: string;
 }> = ({ children, className }) => (
-  <tr className={cn('hover:bg-muted/30 transition-colors', className)}>
+  <tr className={cn('hover:bg-muted/30 dark:hover:bg-white/5 transition-colors', className)}>
     {children}
   </tr>
 );

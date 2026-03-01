@@ -338,7 +338,7 @@ export const EnhancedPromptInput: React.FC<EnhancedPromptInputProps> = ({
     return (
         <div
             className={cn(
-                "relative w-full max-w-[56rem] mx-auto transition-all duration-300 font-sans",
+                "relative w-full max-w-[57rem] mx-auto transition-all duration-300 font-sans",
                 isDragging && "scale-[1.02]"
             )}
             onDragOver={onDragOver}
@@ -347,7 +347,7 @@ export const EnhancedPromptInput: React.FC<EnhancedPromptInputProps> = ({
         >
             {/* Main Container */}
             <div className={cn(
-                "flex flex-col mx-2 md:mx-0 items-stretch transition-all duration-200 relative z-10 rounded-2xl border border-border/20 bg-white dark:bg-sidebar",
+                "flex flex-col mx-auto md:mx-0 items-stretch transition-all duration-200 relative z-10 rounded-2xl border border-border/20 bg-white dark:bg-sidebar",
                 isLoading && "opacity-60"
             )}>
 
