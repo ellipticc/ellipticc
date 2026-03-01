@@ -403,7 +403,10 @@ export const EnhancedPromptInput: React.FC<EnhancedPromptInputProps> = ({
 
 
                     <div className={cn("relative mb-1", isLoading && "pointer-events-none")}>
-                        <div className="max-h-[40vh] w-full overflow-y-auto overflow-x-hidden custom-scrollbar font-sans break-words min-h-[2.5rem] px-3 relative">
+                        <div
+                            className="max-h-[40vh] w-full overflow-y-auto overflow-x-hidden custom-scrollbar font-sans break-words min-h-[2.5rem] pl-4 pr-2 relative"
+                            style={{ scrollbarGutter: 'stable' }}
+                        >
                             {isImproving ? (
                                 <Shimmer className="w-full text-[16px] leading-relaxed py-0 block min-h-[1.5em] text-foreground p-[2px]">
                                     {message || "Improving..."}
