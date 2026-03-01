@@ -607,10 +607,6 @@ body.is-dragging-files * {
 }
 
 .chat-page-card:hover .hover-scrollbar::-webkit-scrollbar-thumb {
-  background-color: oklch(var(--muted-foreground) / 0.5) !important;
-}
-
-/* Fallback: also show on direct hover of scroll container */
-.hover-scrollbar:hover::-webkit-scrollbar-thumb {
-  background-color: oklch(var(--muted-foreground) / 0.5) !important;
+  background-color: var(--muted-foreground) !important;
+  opacity: 0.5;
 }

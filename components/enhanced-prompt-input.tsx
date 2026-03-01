@@ -338,7 +338,7 @@ export const EnhancedPromptInput: React.FC<EnhancedPromptInputProps> = ({
     return (
         <div
             className={cn(
-                "relative w-full max-w-[57rem] mx-auto transition-all duration-300 font-sans",
+                "relative w-full max-w-[58rem] mx-auto transition-all duration-300 font-sans",
                 isDragging && "scale-[1.02]"
             )}
             onDragOver={onDragOver}

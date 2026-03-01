@@ -1934,7 +1934,7 @@ export default function AssistantPage() {
                         <div
                             ref={scrollContainerRef}
                             onScroll={onScroll}
-                            className="flex-1 overflow-y-auto px-4 py-4 min-h-0 max-w-full overflow-x-hidden font-inter text-[13.5px] hover-scrollbar"
+                            className="flex-1 overflow-y-auto px-4 py-4 min-h-0 max-w-full overflow-x-hidden font-inter text-[13.5px] hover-scrollbar [scrollbar-gutter:stable]"
                         >
 
                             {/* Standard List Rendering */}
@@ -2034,7 +2034,7 @@ export default function AssistantPage() {
                             )}
 
                             <div className="flex justify-center w-full">
-                                <div className="max-w-[56rem] w-full px-4">
+                                <div className="max-w-[58rem] w-full px-4">
                                     <EnhancedPromptInput
                                         onSubmit={async (text, files, thinkingMode, searchMode, style) => {
                                             await handleSubmit(text, files, thinkingMode, searchMode, undefined, false, style);
