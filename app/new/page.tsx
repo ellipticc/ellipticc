@@ -2056,7 +2056,7 @@ export default function AssistantPage() {
                                         toolResultTokens={contextBreakdown?.toolResultTokens || 0}
                                     />
                                     {/* Disclaimer Text */}
-                                    <p className="text-xs text-center text-muted-foreground mt-2 mb-4 select-none" aria-hidden="false">
+                                    <p className="text-xs text-center text-muted-foreground mb-8 select-none" aria-hidden="false">
                                         While we strive for accuracy, the AI may occasionally get things wrong.
                                     </p>
                                 </div>
