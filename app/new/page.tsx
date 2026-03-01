@@ -2034,7 +2034,7 @@ export default function AssistantPage() {
                             )}
 
                            <div className="flex justify-center w-full">
-                                <div className="max-w-[55rem] w-full px-4">
+                                <div className="max-w-[58rem] w-full px-4">
                                     <EnhancedPromptInput
                                         onSubmit={async (text, files, thinkingMode, searchMode, style) => {
                                             await handleSubmit(text, files, thinkingMode, searchMode, undefined, false, style);
