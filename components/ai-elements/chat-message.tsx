@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { IconCopy, IconEdit, IconRefresh, IconThumbDown, IconFileText, IconThumbUp, IconCheck, IconChevronRight, IconDownload, IconChevronLeft, IconListDetails, IconArrowRight, IconHandStop, IconBulb, IconWorld, IconWorldOff, IconViewportShort, IconThumbUpFilled, IconThumbDownFilled, IconArrowUp } from "@tabler/icons-react"
+import { IconCopy, IconEdit, IconRefresh, IconThumbDown, IconFileText, IconThumbUp, IconCheck, IconChevronRight, IconDownload, IconChevronLeft, IconListDetails, IconArrowRight, IconHandStop, IconBulb, IconInfoCircle, IconWorld, IconWorldOff, IconViewportShort, IconThumbUpFilled, IconThumbDownFilled, IconArrowUp } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
@@ -298,7 +298,7 @@ export function ChatMessage({ message, isLast, onCopy, onEdit, onFeedback, onReg
 
             {/* Message Content */}
             <div className={cn(
-                "flex flex-col min-w-0 transition-all duration-200 w-full max-w-[46rem]",
+                "flex flex-col min-w-0 transition-all duration-200 w-full max-w-[52rem]",
                 isUser
                     ? (isEditingPrompt ? "items-start !max-w-[none]" : "items-end ml-auto")
                     : "items-start"
@@ -331,7 +331,7 @@ export function ChatMessage({ message, isLast, onCopy, onEdit, onFeedback, onReg
                                     </div>
                                     <div className="flex items-center justify-between mt-2">
                                         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground select-none">
-                                            <IconBulb className="size-3.5 text-amber-500/80" />
+                                            <IconInfoCircle className="size-3.5 text-muted-foreground/70" />
                                             <span>Editing will start a new branch. Navigation is possible via arrows.</span>
                                         </div>
                                         <div className="flex gap-2">
@@ -360,7 +360,7 @@ export function ChatMessage({ message, isLast, onCopy, onEdit, onFeedback, onReg
                                     {(() => {
                                         const parsed = parseUserContent(message.content);
                                         return (
-                                            <div className="flex flex-col gap-2 w-full items-end">
+                                            <div className="flex flex-col gap-2 w-full items-end pl-6 sm:pl-10">
                                                 {/* Message bubble */}
                                                 {parsed.text && (
                                                     <div className="relative group/user-msg w-fit max-w-full">

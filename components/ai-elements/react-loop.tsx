@@ -45,8 +45,10 @@ import { CodeBlock } from "./markdown-components";
 
 export interface ReActStep {
   id?: string;
+  /** 'think' = inline reasoning block; all other values = tool step */
+  type?: string;
   stepType?: "thinking" | "search" | "code" | "think" | "searching" | "default";
-  label: ReactNode;
+  label?: ReactNode;
   description?: ReactNode;
   content?: string;
   code?: string;
@@ -112,7 +114,7 @@ export const ReActSearchingQueries = memo(
       {queries.map((q, i) => (
         <div
           key={i}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted/60 dark:bg-stone-800/80 border border-border/60 dark:border-stone-700/70 text-[11px] text-muted-foreground/80 dark:text-stone-400"
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted/70 dark:bg-white/[0.08] border border-border/70 dark:border-white/15 text-[11px] text-muted-foreground dark:text-stone-300"
         >
           <IconSearch className="size-3 opacity-60" />
           {q}
@@ -127,7 +129,7 @@ export const ReActSourceTable = memo(
   ({ sources, className }: { sources: any[]; className?: string }) => (
     <div
       className={cn(
-        "mt-3 rounded-xl border border-border/30 bg-muted/5 overflow-hidden max-h-[220px] overflow-y-auto custom-scrollbar shadow-inner pb-1",
+        "mt-3 rounded-xl border border-border/40 dark:border-white/10 bg-muted/20 dark:bg-white/5 overflow-hidden max-h-[220px] overflow-y-auto custom-scrollbar shadow-sm pb-1",
         className
       )}
     >
@@ -145,7 +147,7 @@ export const ReActSourceTable = memo(
               href={source.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center justify-between mx-2 px-3 py-2 transition-all text-sm hover:bg-muted/50 dark:hover:bg-muted/40 cursor-pointer rounded-lg"
+              className="group relative flex items-center justify-between mx-2 px-3 py-2 transition-all text-sm hover:bg-muted/60 dark:hover:bg-white/10 cursor-pointer rounded-lg"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div className="shrink-0">
@@ -354,13 +356,13 @@ export const ReActLoop = memo(
 
     return (
       <Collapsible
-        className={cn("not-prose mb-4", className)}
+        className={cn("not-prose mb-2", className)}
         open={isOpen}
         onOpenChange={handleOpenChange}
       >
         {/* ── Trigger ── */}
-        <CollapsibleTrigger className="flex w-full items-center gap-2 text-neutral-950 dark:text-stone-500 text-[12px] transition-colors hover:text-neutral-700 dark:hover:text-stone-400">
-          <div className="flex gap-2 items-center w-fit">
+        <CollapsibleTrigger className="flex w-full items-center gap-1.5 text-neutral-950 dark:text-stone-500 text-[12px] transition-colors hover:text-neutral-700 dark:hover:text-stone-400">
+          <div className="flex gap-1.5 items-center w-fit">
             <div className="relative flex items-center h-4">
               {isOpen ? (
                 <IconBulbFilled className="size-3.5 text-neutral-950 dark:text-stone-500 transition-colors" />
@@ -372,11 +374,11 @@ export const ReActLoop = memo(
               )}
             </div>
             <div className="flex-1">{triggerLabel}</div>
-            <div className="ml-2 flex items-center">
+            <div className="ml-1 flex items-center">
               {isOpen ? (
-                <IconChevronDown className="size-4 transition-transform duration-200" />
+                <IconChevronDown className="size-3.5 transition-transform duration-200" />
               ) : (
-                <IconChevronRight className="size-4 transition-transform duration-200" />
+                <IconChevronRight className="size-3.5 transition-transform duration-200" />
               )}
             </div>
           </div>
@@ -385,34 +387,78 @@ export const ReActLoop = memo(
         {/* ── Content ── */}
         <CollapsibleContent
           className={cn(
-            "mt-4 text-sm",
+            "mt-2 text-sm",
             "data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-top-2 data-[state=open]:slide-in-from-top-2 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in"
           )}
         >
-          {/* Reasoning text (from <thinking> / <think> tags) */}
-          {reasoning && (
-            <div className="relative pl-[26px] text-neutral-950 dark:text-stone-500 [&_*]:text-neutral-950 [&_*]:dark:text-stone-500 font-geist text-[12px] leading-relaxed mb-4">
-              <div className="absolute left-[6px] top-0 bottom-[-4px] w-px bg-border transition-colors rounded-sm" />
-              <MarkdownRenderer
-                content={reasoning}
-                isStreaming={isStreaming}
-                compact={true}
-              />
-            </div>
-          )}
+          {(() => {
+            // Check if steps contain interleaved 'think' type entries (live streaming path)
+            const hasThinkSteps = steps && steps.some(s => s.type === 'think');
 
-          {/* ReAct loop steps */}
-          {steps && steps.length > 0 && (
-            <div className="space-y-0">
-              {steps.map((step, idx) => (
-                <ReActStepItem
-                  key={step.id || idx}
-                  step={step}
-                  isLast={idx === steps.length - 1}
-                />
-              ))}
-            </div>
-          )}
+            if (hasThinkSteps) {
+              // TRUE REACT LOOP: render unified chronological steps
+              return (
+                <div className="space-y-0">
+                  {steps!.map((step, idx) => {
+                    if (step.type === 'think') {
+                      // Inline reasoning block
+                      return (
+                        <div
+                          key={`think-${idx}`}
+                          className="relative pl-[26px] text-neutral-950 dark:text-stone-500 [&_*]:text-neutral-950 [&_*]:dark:text-stone-500 font-geist text-[12px] leading-relaxed pb-3"
+                        >
+                          <div className="absolute left-[6px] top-0 bottom-0 w-px bg-border transition-colors rounded-sm" />
+                          <MarkdownRenderer
+                            content={step.content || ''}
+                            isStreaming={isStreaming && idx === steps!.length - 1}
+                            compact={true}
+                          />
+                        </div>
+                      );
+                    }
+                    // Tool step
+                    const toolSteps = steps!.filter(s => s.type !== 'think');
+                    const toolIdx = toolSteps.indexOf(step);
+                    const isLastTool = toolIdx === toolSteps.length - 1 && idx === steps!.length - 1;
+                    return (
+                      <ReActStepItem
+                        key={step.id || `tool-${idx}`}
+                        step={step}
+                        isLast={isLastTool}
+                      />
+                    );
+                  })}
+                </div>
+              );
+            }
+
+            // BACKWARD COMPAT: flat reasoning string + separate tool steps
+            return (
+              <>
+                {reasoning && (
+                  <div className="relative pl-[26px] text-neutral-950 dark:text-stone-500 [&_*]:text-neutral-950 [&_*]:dark:text-stone-500 font-geist text-[12px] leading-relaxed mb-3">
+                    <div className="absolute left-[6px] top-0 bottom-[-4px] w-px bg-border transition-colors rounded-sm" />
+                    <MarkdownRenderer
+                      content={reasoning}
+                      isStreaming={isStreaming}
+                      compact={true}
+                    />
+                  </div>
+                )}
+                {steps && steps.length > 0 && (
+                  <div className="space-y-0">
+                    {steps.map((step, idx) => (
+                      <ReActStepItem
+                        key={step.id || idx}
+                        step={step}
+                        isLast={idx === steps!.length - 1}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </CollapsibleContent>
       </Collapsible>
     );

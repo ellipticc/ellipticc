@@ -713,6 +713,8 @@ export default function AssistantPage() {
             let thinkingBuffer = ""; // Content inside <>thinking>...</thinking>
             let answerBuffer = ""; // Content outside thinking tags
             let assistantReasoningContent = ""; // Processed thinking (from backend reasoning event)
+            // Unified ReAct steps array - chronological mix of think and tool steps
+            const reactSteps: { type: string; content?: string; [key: string]: any }[] = [];
             const messageSources: any[] = []; // Track sources for citations
             const messageSteps: any[] = []; // Track steps for the final state update
             let isInsideThinkingTag = false;
@@ -759,35 +761,34 @@ export default function AssistantPage() {
                         if (eventType === 'reasoning' && dataStr) {
                             try {
                                 const data = JSON.parse(dataStr);
-                                let chunkReasoning = '';
-
-                                // Support plaintext reasoning payloads
-                                if (data.reasoning) {
-                                    chunkReasoning = data.reasoning;
-                                }
+                                const chunkReasoning = data.reasoning || '';
 
                                 if (chunkReasoning) {
                                     assistantReasoningContent += chunkReasoning;
 
-                                    // Schedule UI update (batched per animation frame)
-                                    if (pendingRafId === null) {
-                                        pendingRafId = requestAnimationFrame(() => {
-                                            pendingRafId = null;
-                                            setMessages(prev => {
-                                                const newMessages = [...prev];
-                                                const lastIdx = newMessages.length - 1;
-                                                const lastMessage = newMessages[lastIdx];
-                                                if (lastMessage && lastMessage.role === 'assistant') {
-                                                    newMessages[lastIdx] = {
-                                                        ...lastMessage,
-                                                        reasoning: assistantReasoningContent,
-                                                        isThinking: true
-                                                    };
-                                                }
-                                                return newMessages;
-                                            });
-                                        });
+                                    // Append to last 'think' step or create a new one
+                                    const lastStep = reactSteps[reactSteps.length - 1];
+                                    if (lastStep && lastStep.type === 'think') {
+                                        lastStep.content = (lastStep.content || '') + chunkReasoning;
+                                    } else {
+                                        reactSteps.push({ type: 'think', content: chunkReasoning });
                                     }
+
+                                    // Direct update — no RAF batching to ensure token-by-token flow
+                                    setMessages(prev => {
+                                        const newMessages = [...prev];
+                                        const lastIdx = newMessages.length - 1;
+                                        const lastMessage = newMessages[lastIdx];
+                                        if (lastMessage && lastMessage.role === 'assistant') {
+                                            newMessages[lastIdx] = {
+                                                ...lastMessage,
+                                                reasoning: assistantReasoningContent,
+                                                steps: [...reactSteps],
+                                                isThinking: true
+                                            };
+                                        }
+                                        return newMessages;
+                                    });
                                 }
                             } catch (e) {
                                 console.warn('Failed to parse reasoning event', dataStr, e);
@@ -807,27 +808,18 @@ export default function AssistantPage() {
                         if (eventType === 'step' && dataStr) {
                             try {
                                 const data = JSON.parse(dataStr);
-                                let stepData = null;
-
-                                // Support plaintext step payloads
-                                if (data.step) {
-                                    stepData = data.step;
-                                } else {
-                                    stepData = data;
-                                }
+                                const stepData = data.step || data;
 
                                 if (stepData) {
                                     messageSteps.push(stepData);
+                                    // Append tool step to unified reactSteps
+                                    reactSteps.push(stepData);
+
                                     setMessages(prev => {
                                         const newMessages = [...prev];
                                         const lastIdx = newMessages.length - 1;
                                         const lastMessage = newMessages[lastIdx];
                                         if (lastMessage && lastMessage.role === 'assistant') {
-                                            const existingSteps = lastMessage.steps || [];
-                                            // Deduplicate by ID if necessary, or just append
-                                            const newSteps = [...existingSteps, stepData];
-
-                                            // Also update sources if this was a search step for legacy compatibility/backup
                                             let updatedSources = lastMessage.sources;
                                             if (stepData.stepType === 'search' && Array.isArray(stepData.results)) {
                                                 updatedSources = stepData.results.map((r: any) => ({
@@ -836,10 +828,9 @@ export default function AssistantPage() {
                                                     content: r.content || ''
                                                 }));
                                             }
-
                                             newMessages[lastIdx] = {
                                                 ...lastMessage,
-                                                steps: newSteps,
+                                                steps: [...reactSteps],
                                                 sources: updatedSources
                                             };
                                         }
@@ -1136,7 +1127,7 @@ export default function AssistantPage() {
                             content: answerBuffer.trim(),
                             reasoning: finalReasoningContent,
                             sources: messageSources.length > 0 ? messageSources : lastMessage.sources,
-                            steps: messageSteps.length > 0 ? messageSteps : lastMessage.steps,
+                            steps: reactSteps.length > 0 ? reactSteps : (messageSteps.length > 0 ? messageSteps : lastMessage.steps),
                             isThinking: false,
                             createdAt: lastMessage.createdAt,
                             feedback: lastMessage.feedback,
@@ -2043,7 +2034,7 @@ export default function AssistantPage() {
                             )}
 
                             <div className="flex justify-center w-full mt-3">
-                                <div className="max-w-5xl w-full px-4">
+                                <div className="max-w-[56rem] w-full px-4">
                                     <EnhancedPromptInput
                                         onSubmit={async (text, files, thinkingMode, searchMode, style) => {
                                             await handleSubmit(text, files, thinkingMode, searchMode, undefined, false, style);
