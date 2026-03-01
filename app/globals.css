@@ -600,11 +600,17 @@ body.is-dragging-files * {
   }
 }
 
-/* Custom Scrollbar Visibility */
+/* Custom Scrollbar Visibility — shown only when hovering the chat page card */
 .hover-scrollbar::-webkit-scrollbar-thumb {
   background-color: transparent !important;
+  transition: background-color 0.15s ease;
 }
 
+.chat-page-card:hover .hover-scrollbar::-webkit-scrollbar-thumb {
+  background-color: oklch(var(--muted-foreground) / 0.5) !important;
+}
+
+/* Fallback: also show on direct hover of scroll container */
 .hover-scrollbar:hover::-webkit-scrollbar-thumb {
-  background-color: var(--muted-foreground) !important;
+  background-color: oklch(var(--muted-foreground) / 0.5) !important;
 }

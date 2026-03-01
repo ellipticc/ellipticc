@@ -1859,7 +1859,7 @@ export default function AssistantPage() {
     ) : null;
 
     return (
-        <div className="flex flex-col h-full bg-background relative overflow-x-hidden">
+        <div className="chat-page-card flex flex-col h-full bg-background relative overflow-x-hidden">
 
 
             {/* Header */}

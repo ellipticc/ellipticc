@@ -347,7 +347,7 @@ export const EnhancedPromptInput: React.FC<EnhancedPromptInputProps> = ({
         >
             {/* Main Container */}
             <div className={cn(
-                "flex flex-col mx-auto md:mx-0 items-stretch transition-all duration-200 relative z-10 rounded-2xl border border-border/20 bg-white dark:bg-sidebar",
+                "flex flex-col items-stretch transition-all duration-200 relative z-10 rounded-2xl border border-border/20 bg-white dark:bg-sidebar",
                 isLoading && "opacity-60"
             )}>
 
