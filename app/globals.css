@@ -599,3 +599,12 @@ body.is-dragging-files * {
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom Scrollbar Visibility */
+.hover-scrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent !important;
+}
+
+.hover-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: var(--muted-foreground) !important;
+}
