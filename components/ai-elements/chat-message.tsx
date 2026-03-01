@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { IconCopy, IconEdit, IconRefresh, IconThumbDown, IconFileText, IconThumbUp, IconCheck, IconChevronRight, IconDownload, IconChevronLeft, IconListDetails, IconArrowRight, IconHandStop, IconBulb, IconWorld, IconWorldOff, IconBulbFilled, IconViewportShort, IconThumbUpFilled, IconThumbDownFilled, IconArrowUp } from "@tabler/icons-react"
+import { IconCopy, IconEdit, IconRefresh, IconThumbDown, IconFileText, IconThumbUp, IconCheck, IconChevronRight, IconDownload, IconChevronLeft, IconListDetails, IconArrowRight, IconHandStop, IconBulb, IconWorld, IconWorldOff, IconViewportShort, IconThumbUpFilled, IconThumbDownFilled, IconArrowUp } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
@@ -11,20 +11,9 @@ import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuLabel } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Reasoning, ReasoningTrigger, ReasoningContent, detectThinkingTagType } from "@/components/ai-elements/reasoning"
+import { ReActLoop } from "@/components/ai-elements/react-loop"
 import { MarkdownRenderer } from "@/components/ai-elements/markdown-renderer"
 import { Suggestions, Suggestion } from "@/components/ai-elements/suggestion"
-import {
-    ChainOfThought,
-    ChainOfThoughtHeader,
-    ChainOfThoughtContent,
-    ChainOfThoughtStep,
-    ChainOfThoughtSearchResults,
-    ChainOfThoughtSearchResult,
-    ChainOfThoughtImage,
-    ChainOfThoughtSearchingQueries,
-    ChainOfThoughtSourceTable,
-} from "@/components/ai-elements/chain-of-thought"
 
 export interface ToolCall {
     id: string;
@@ -150,7 +139,6 @@ export function ChatMessage({ message, isLast, onCopy, onEdit, onFeedback, onReg
     const [copied, setCopied] = React.useState(false);
     const [feedbackGiven, setFeedbackGiven] = React.useState(!!message.feedback);
     const [isEditingPrompt, setIsEditingPrompt] = React.useState(false);
-    const [isCotOpen, setIsCotOpen] = React.useState(false);
     const [editContent, setEditContent] = React.useState(message.content);
     const [regenInput, setRegenInput] = React.useState("");
     const [isRegenOpen, setIsRegenOpen] = React.useState(false);
@@ -296,19 +284,6 @@ export function ChatMessage({ message, isLast, onCopy, onEdit, onFeedback, onReg
             steps: v.steps || message.steps
         };
     }, [message, currentVersionIndex]);
-
-    // Intelligent CoT Collapse/Expand logic
-    React.useEffect(() => {
-        if (displayRes.isThinking) {
-            setIsCotOpen(true);
-        } else {
-            // Streaming finished, smooth collapse after delay
-            const timer = setTimeout(() => {
-                setIsCotOpen(false);
-            }, 250);
-            return () => clearTimeout(timer);
-        }
-    }, [displayRes.isThinking]);
 
     const displayContent = displayRes.content;
     const feedbackValue = displayRes.feedback;
@@ -591,88 +566,16 @@ export function ChatMessage({ message, isLast, onCopy, onEdit, onFeedback, onReg
                         </div>
                     </>
                 ) : (
-                    <div className="w-full space-y-0.5 selection:bg-primary/20 selection:text-foreground">{/* Reasoning / Chain of Thought */}
-                        {/* Reasoning / Chain of Thought */}
-                        {displayRes.reasoning && (
-                            (() => {
-                                const reasoningContent = displayRes.reasoning;
-                                const tagType = detectThinkingTagType(reasoningContent);
-
-                                return (
-                                    <Reasoning
-                                        key={`reasoning-${displayRes.id}-${displayRes.reasoningDuration ?? 'none'}`}
-                                        isStreaming={displayRes.isThinking}
-                                        duration={displayRes.reasoningDuration}
-                                        thinkingType={tagType || undefined}
-                                        className="mb-1"
-                                    >
-                                        <ReasoningTrigger className="w-fit" />
-                                        <ReasoningContent isStreaming={displayRes.isThinking}>
-                                            {reasoningContent}
-                                        </ReasoningContent>
-                                    </Reasoning>
-                                );
-                            })()
-                        )}{/* Show thinking placeholder only during active streaming */}
-                        {displayRes.isThinking && isLast && !displayRes.reasoning && (
-                            <div className="flex items-center text-sm text-muted-foreground italic animate-pulse">
-                                <IconBulb className="size-3 mr-2" />
-                                Thinking...
-                            </div>
-                        )}
-                        {/* If reasoning finished but we only have duration (no content), show duration */}
-                        {!displayRes.isThinking && displayRes.reasoningDuration !== undefined && displayRes.reasoningDuration > 0 && !displayRes.reasoning && (
-                            <div className="flex items-center text-sm text-muted-foreground italic">
-                                <IconBulbFilled className="size-3 mr-2" />
-                                Thought for {displayRes.reasoningDuration}s
-                            </div>
-                        )}
-
-                        {/* Unified Chain of Thought Section */}
-                        {displayRes.steps && displayRes.steps.length > 0 && (
-                            <ChainOfThought
-                                className="mb-4"
-                                open={isCotOpen}
-                                onOpenChange={setIsCotOpen}
-                            >
-                                <ChainOfThoughtHeader label={displayRes.isThinking ? "Thinking..." : "Thought process"} />
-                                <ChainOfThoughtContent>
-                                    {displayRes.steps.map((step: any, idx: number) => (
-                                        <ChainOfThoughtStep
-                                            key={step.id || idx}
-                                            stepType={step.stepType}
-                                            label={step.label}
-                                            status={step.status || "complete"}
-                                            content={step.content}
-                                            code={step.code}
-                                            stdout={step.stdout}
-                                            isLast={idx === (displayRes.steps?.length ?? 0) - 1}
-                                        >
-                                            {/* Results rendering for search and images */}
-                                            {step.stepType === 'searching' && step.queries && (
-                                                <ChainOfThoughtSearchingQueries queries={step.queries} />
-                                            )}
-                                            {step.stepType === 'search' && step.results && (
-                                                <ChainOfThoughtSourceTable sources={step.results} />
-                                            )}
-                                            {step.error && (
-                                                <pre className="text-[11px] font-mono bg-destructive/10 text-destructive p-2 rounded-md overflow-x-auto max-w-full">
-                                                    {step.error}
-                                                </pre>
-                                            )}
-                                            {step.images && step.images.length > 0 && (
-                                                <div className="flex flex-wrap gap-2">
-                                                    {step.images.map((img: string, iIdx: number) => (
-                                                        <ChainOfThoughtImage key={iIdx}>
-                                                            <img src={`data:image/png;base64,${img}`} alt={`Plot ${iIdx + 1}`} className="max-w-full h-auto" />
-                                                        </ChainOfThoughtImage>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </ChainOfThoughtStep>
-                                    ))}
-                                </ChainOfThoughtContent>
-                            </ChainOfThought>
+                    <div className="w-full space-y-0.5 selection:bg-primary/20 selection:text-foreground">
+                        {/* ReAct Loop — unified reasoning text + CoT steps under one collapsible */}
+                        {(displayRes.reasoning || (displayRes.steps && displayRes.steps.length > 0) || displayRes.isThinking) && (
+                            <ReActLoop
+                                key={`react-${displayRes.id}-${displayRes.reasoningDuration ?? 'none'}`}
+                                reasoning={displayRes.reasoning}
+                                steps={displayRes.steps}
+                                isStreaming={!!displayRes.isThinking}
+                                duration={displayRes.reasoningDuration}
+                            />
                         )}
 
                         <div className="w-full max-w-full break-words overflow-hidden font-inter text-[14px]">

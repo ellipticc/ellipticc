@@ -261,7 +261,7 @@ export const AppSidebar = React.memo(function AppSidebar({
       collapsible="icon"
       className={cn(
         "transition-[width,background-color] duration-300 ease-in-out",
-        isChat && "bg-muted/30 dark:bg-muted/10",
+        isChat && "dark:bg-muted/10",
         props.className
       )}
       {...props}

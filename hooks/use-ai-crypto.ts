@@ -10,6 +10,9 @@ import { sortChatsByLastMessage } from '@/lib/chat-utils';
 // components mount and call loadChats() concurrently.
 let _chatsLoadedOnce = false;
 let _inflightFetch: Promise<void> | null = null;
+// Module-level cache so newly-mounted instances start with already-loaded chats
+// instead of empty [] (which caused title to be blank on client-side navigation).
+let _chatsCache: { id: string, title: string, pinned: boolean, archived: boolean, createdAt: string, lastMessageAt?: string }[] = [];
 
 export interface DecryptedMessage {
     role: 'user' | 'assistant' | 'system';
@@ -49,12 +52,13 @@ export function useAICrypto(): UseAICryptoReturn {
     const [userKeys, setUserKeys] = useState<{ keypairs: UserKeypairs } | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const [chats, setChats] = useState<{ id: string, title: string, pinned: boolean, archived: boolean, createdAt: string, lastMessageAt?: string }[]>([]);
+    const [chats, setChats] = useState<{ id: string, title: string, pinned: boolean, archived: boolean, createdAt: string, lastMessageAt?: string }[]>(() => _chatsCache);
 
     // Cross-instance sync: dispatch and listen for chat mutations via custom events
     const instanceId = useRef(Math.random().toString(36));
 
     const broadcastChats = useCallback((updatedChats: typeof chats) => {
+        _chatsCache = updatedChats; // Keep module-level cache current for new instances
         if (typeof window !== 'undefined') {
             window.dispatchEvent(new CustomEvent('chat-mutation', { detail: { chats: updatedChats, source: instanceId.current } }));
         }
@@ -265,13 +269,6 @@ export function useAICrypto(): UseAICryptoReturn {
         const updated = chats.filter(c => c.id !== conversationId);
         setChats(sortChatsByLastMessage(updated));
         broadcastChats(updated);
-
-        if (typeof window !== "undefined") {
-            const currentUrlId = new URLSearchParams(window.location.search).get('conversationId');
-            if (currentUrlId === conversationId) {
-                window.history.replaceState(null, '', '/new');
-            }
-        }
 
         try {
             await apiClient.deleteChat(conversationId);

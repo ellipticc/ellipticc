@@ -187,6 +187,9 @@ function ChatItem({ chat, actions }: { chat: ChatType; actions: ChatActions }) {
       await actions.deleteChat(chat.id)
       setDeleteDialogOpen(false)
       toast.success("Chat deleted")
+      if (isActive) {
+        router.push('/new')
+      }
     } catch {
       toast.error("Failed to delete chat")
     }
