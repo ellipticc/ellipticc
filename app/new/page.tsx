@@ -714,7 +714,7 @@ export default function AssistantPage() {
             let answerBuffer = ""; // Content outside thinking tags
             let assistantReasoningContent = ""; // Processed thinking (from backend reasoning event)
             // Unified ReAct steps array - chronological mix of think and tool steps
-            const reactSteps: { type: string; content?: string; [key: string]: any }[] = [];
+            const reactSteps: { type: string; content?: string;[key: string]: any }[] = [];
             const messageSources: any[] = []; // Track sources for citations
             const messageSteps: any[] = []; // Track steps for the final state update
             let isInsideThinkingTag = false;
@@ -2033,8 +2033,8 @@ export default function AssistantPage() {
                                 </div>
                             )}
 
-                            <div className="flex justify-center w-full mt-3">
-                                <div className="max-w-[56rem] w-full px-4">
+                            <div className="flex justify-center w-full">
+                                <div className="max-w-5xl w-full px-4">
                                     <EnhancedPromptInput
                                         onSubmit={async (text, files, thinkingMode, searchMode, style) => {
                                             await handleSubmit(text, files, thinkingMode, searchMode, undefined, false, style);
@@ -2056,7 +2056,7 @@ export default function AssistantPage() {
                                         toolResultTokens={contextBreakdown?.toolResultTokens || 0}
                                     />
                                     {/* Disclaimer Text */}
-                                    <p className="font-geist-mono text-[10px] text-center text-muted-foreground/60 mt-3 mb-0.5 select-none" aria-hidden="false">
+                                    <p className="text-xs text-center text-muted-foreground mt-2 select-none" aria-hidden="false">
                                         While we strive for accuracy, the AI may occasionally get things wrong.
                                     </p>
                                 </div>

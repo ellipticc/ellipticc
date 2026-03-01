@@ -139,7 +139,7 @@ html {
   --input: oklch(0.93 0.004 60);
   --ring: oklch(0.72 0.02 55);
 
-  --sidebar: oklch(1 0 0);
+  --sidebar: oklch(0.9861 0.0034 67.78);
   --sidebar-foreground: oklch(0.20 0.01 60);
 
   --sidebar-primary: oklch(0.24 0.02 55);
