@@ -109,14 +109,23 @@ function processTextWithCitations(
       let match;
 
       while ((match = regex.exec(child)) !== null) {
-        // Text before the citation cluster
-        if (match.index > lastIndex) {
-          parts.push(child.substring(lastIndex, match.index));
+        const clusterEnd = match.index + match[0].length;
+
+        // Check for sentence-ending punctuation immediately after the citation cluster.
+        // When the LLM writes "claim[1]." we want to render "claim.[1]" not "claim[1]."
+        const nextChar = child[clusterEnd] ?? '';
+        const trailingPunct = /^[.,;:!?]/.test(nextChar) ? nextChar : '';
+
+        // Text before the citation cluster, plus any trailing punctuation hoisted before the pill
+        const beforeText = child.substring(lastIndex, match.index);
+        if (beforeText || trailingPunct) {
+          parts.push(beforeText + trailingPunct);
         }
 
         // Extract individual citation numbers from the cluster
         const groupCitations: { number: number; source: CitationSource }[] = [];
         let indMatch;
+        individualRegex.lastIndex = 0; // reset for each new cluster string
         while ((indMatch = individualRegex.exec(match[0])) !== null) {
           const num = parseInt(indMatch[1] || indMatch[2], 10);
           const source = sources[num - 1];
@@ -154,11 +163,13 @@ function processTextWithCitations(
             </InlineCitationCard>
           );
         } else {
-          // No matching source, keep original text
+          // No matching source — emit the citation text literally; punctuation was
+          // already hoisted into the preceding text node above.
           parts.push(match[0]);
         }
 
-        lastIndex = match.index + match[0].length;
+        // Advance past the cluster and the hoisted punctuation character (if any)
+        lastIndex = clusterEnd + (trailingPunct ? 1 : 0);
       }
 
       if (parts.length === 0) return child; // No citations found

@@ -646,6 +646,7 @@ export function ChatMessage({ message, isLast, onCopy, onEdit, onFeedback, onReg
                                             content={step.content}
                                             code={step.code}
                                             stdout={step.stdout}
+                                            isLast={idx === (displayRes.steps?.length ?? 0) - 1}
                                         >
                                             {/* Results rendering for search and images */}
                                             {step.stepType === 'searching' && step.queries && (

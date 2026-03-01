@@ -111,7 +111,7 @@ export default function AssistantPage() {
     const [feedbackResponseContext, setFeedbackResponseContext] = React.useState<string>("");
     const abortControllerRef = React.useRef<AbortController | null>(null)
     const [model, setModel] = React.useState("auto")
-    const [chatTitle, setChatTitle] = React.useState<string>('Chat');
+    const [chatTitle, setChatTitle] = React.useState<string>('');
     const lastScrollTopRef = React.useRef(0)
     const [isLoadingOlder, setIsLoadingOlder] = React.useState(false)
     const [pagination, setPagination] = React.useState({ offset: 0, limit: 50, total: 0, hasMore: false })
@@ -233,9 +233,16 @@ export default function AssistantPage() {
             return;
         }
 
+        // On navigation, immediately clear stale title so header shows '...' instead of old name
+        if (isNavigation) {
+            setChatTitle("");
+            setDisplayedTitle("");
+            setIsTypingTitle(false);
+        }
+
         const currentChat = chats.find((c) => c.id === conversationId);
         if (!currentChat) {
-            // Chat not in list yet (still loading)
+            // Chat not in list yet — cleared above, will fill once chats load
             return;
         }
 
@@ -1753,7 +1760,7 @@ export default function AssistantPage() {
                         disabled={isTypingTitle || displayedTitle === "New Chat"}
                     >
                         <span className="truncate">
-                            {displayedTitle || chatTitle || "..."}
+                            {displayedTitle || chatTitle || (conversationId ? "..." : "New Chat")}
                         </span>
                     </Button>
 

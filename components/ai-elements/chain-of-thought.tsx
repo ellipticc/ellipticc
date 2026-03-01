@@ -83,16 +83,16 @@ export const ChainOfThoughtHeader = memo(
       <Collapsible onOpenChange={setIsOpen} open={isOpen}>
         <CollapsibleTrigger
           className={cn(
-            "flex items-center gap-1.5 text-neutral-300 dark:text-stone-500 text-[12px] transition-colors hover:text-neutral-400 dark:hover:text-stone-400 group",
+            "flex items-center gap-1.5 text-neutral-950 dark:text-stone-500 text-[12px] transition-colors hover:text-neutral-700 dark:hover:text-stone-400 group",
             className
           )}
           {...props}
         >
           <div className="relative flex items-center h-4">
             {isOpen ? (
-              <IconBulbFilled className="size-3.5 text-neutral-300 dark:text-stone-500 transition-colors" />
+              <IconBulbFilled className="size-3.5 text-neutral-950 dark:text-stone-500 transition-colors" />
             ) : (
-              <IconBulb className="size-3.5 text-neutral-300 dark:text-stone-500 transition-colors" />
+              <IconBulb className="size-3.5 text-neutral-950 dark:text-stone-500 transition-colors" />
             )}
             {isOpen && <div className="absolute top-5 bottom-[-16px] left-[6px] w-px bg-border transition-colors rounded-sm" />}
           </div>
@@ -119,12 +119,13 @@ export type ChainOfThoughtStepProps = ComponentProps<"div"> & {
   stdout?: string;
   status?: "complete" | "active" | "pending";
   stepType?: "thinking" | "search" | "code" | "think" | "searching" | "default";
+  isLast?: boolean;
 };
 
 const stepStatusStyles = {
-  active: "text-neutral-400 dark:text-stone-400 font-geist text-[12px]",
-  complete: "text-neutral-300 dark:text-stone-500 font-geist text-[12px]",
-  pending: "text-neutral-300/50 dark:text-stone-500/50 font-geist text-[12px]",
+  active: "text-neutral-950 dark:text-stone-400 font-geist text-[12px]",
+  complete: "text-neutral-950 dark:text-stone-500 font-geist text-[12px]",
+  pending: "text-neutral-950/50 dark:text-stone-500/50 font-geist text-[12px]",
 };
 
 const getStepIcon = (stepType?: ChainOfThoughtStepProps['stepType']) => {
@@ -152,6 +153,7 @@ export const ChainOfThoughtStep = memo(
     stdout,
     status = "complete",
     stepType,
+    isLast = false,
     children,
     ...props
   }: ChainOfThoughtStepProps) => {
@@ -174,7 +176,9 @@ export const ChainOfThoughtStep = memo(
           )}>
             <DefaultIcon className="size-3.5 opacity-60" />
           </div>
-          <div className="flex-1 w-px bg-border transition-colors mt-1.5 mb-[-6px]" />
+          {!isLast && (
+            <div className="flex-1 w-px bg-border transition-colors mt-1.5 mb-[-6px]" />
+          )}
         </div>
         <div className="flex-1 min-w-0 pb-4">
           <div className="font-medium leading-tight text-[12px]">{label}</div>
@@ -214,7 +218,7 @@ export const ChainOfThoughtSearchingQueries = memo(
   ({ queries, className, ...props }: { queries: string[], className?: string }) => (
     <div className={cn("flex flex-wrap gap-2 mt-2", className)} {...props}>
       {queries.map((q, i) => (
-        <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted/40 border border-border/50 text-[11px] text-muted-foreground/80">
+        <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted/60 dark:bg-stone-800/80 border border-border/60 dark:border-stone-700/70 text-[11px] text-muted-foreground/80 dark:text-stone-400">
           <IconSearch className="size-3 opacity-60" />
           {q}
         </div>
@@ -241,7 +245,7 @@ export const ChainOfThoughtSourceTable = memo(
               href={source.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center justify-between p-3 py-2.5 transition-all text-sm hover:bg-primary/5 cursor-pointer rounded-lg"
+              className="group relative flex items-center justify-between mx-2 px-3 py-2 transition-all text-sm hover:bg-muted/50 dark:hover:bg-muted/40 cursor-pointer rounded-lg"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div className="shrink-0">
@@ -259,7 +263,7 @@ export const ChainOfThoughtSourceTable = memo(
               <span className="text-[11px] text-muted-foreground/60 font-mono shrink-0 ml-4">{domain}</span>
 
               {index !== sources.length - 1 && (
-                <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-border/40" />
+                <div className="absolute bottom-0 left-5 right-5 h-[1px] bg-border/40" />
               )}
             </a>
           );
@@ -274,7 +278,7 @@ export type ChainOfThoughtSearchResultProps = ComponentProps<typeof Badge>;
 export const ChainOfThoughtSearchResult = memo(
   ({ className, children, ...props }: ChainOfThoughtSearchResultProps) => (
     <Badge
-      className={cn("gap-1 px-2 py-0.5 font-normal text-xs", className)}
+      className={cn("gap-1 px-2 py-0.5 font-normal text-xs dark:bg-stone-800 dark:text-stone-300 dark:border-stone-700", className)}
       variant="secondary"
       {...props}
     >
