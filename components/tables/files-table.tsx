@@ -792,8 +792,13 @@ export const Table01DividerLineSm = ({
 
     // Parse URL path to get folder navigation
     const parseUrlPath = (path: string): string[] => {
-        const fid = searchParams.get('folderId');
-        return fid ? [fid] : [];
+        // Path-based routing: /v/<folderId>
+        const vaultPrefix = '/v/';
+        if (path.startsWith(vaultPrefix)) {
+            const rest = path.slice(vaultPrefix.length);
+            if (rest) return rest.split('/').filter(Boolean);
+        }
+        return [];
     };
 
     // Build URL path from folder path
