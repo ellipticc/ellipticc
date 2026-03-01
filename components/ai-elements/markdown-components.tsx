@@ -425,7 +425,7 @@ export const Table: React.FC<{
   children?: React.ReactNode;
   className?: string;
 }> = ({ children, className }) => (
-  <div className={cn('my-4 border rounded-lg overflow-hidden bg-card', className)}>
+  <div className={cn('my-4 border border-border rounded-lg overflow-hidden bg-card dark:border-border/60 dark:bg-muted/20', className)}>
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         {children}
@@ -438,7 +438,7 @@ export const TableHead: React.FC<{
   children?: React.ReactNode;
   className?: string;
 }> = ({ children, className }) => (
-  <thead className={cn('bg-muted/50 border-b', className)}>
+  <thead className={cn('bg-muted/50 border-b dark:bg-muted/40 dark:border-b-border/50', className)}>
     {children}
   </thead>
 );
@@ -475,7 +475,7 @@ export const InternalTableCell: React.FC<{
 
   if (isHeader) {
     return (
-      <th className={cn('px-4 py-3 font-medium text-muted-foreground text-xs tracking-wider', alignClass, className)}>
+      <th className={cn('px-4 py-3 font-medium text-muted-foreground dark:text-stone-300 text-xs tracking-wider', alignClass, className)}>
         {children}
       </th>
     );
