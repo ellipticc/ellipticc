@@ -48,8 +48,6 @@
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
   --font-geist-mono: var(--font-geist-mono);
-  /* Inter is intentionally NOT in --font-sans to prevent global leakage */
-  /* Use the .font-inter utility class to scope Inter to specific components */
   --font-inter: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
@@ -105,78 +103,78 @@ html {
 }
 
 :root {
-  --font-sans: 'DM Sans', sans-serif;
-  --font-geist-sans: 'DM Sans', sans-serif;
+  --font-sans: 'Google Sans', 'Google Sans Display', ui-sans-serif, system-ui, sans-serif;
+  --font-geist-sans: 'Google Sans', 'Google Sans Display', ui-sans-serif, system-ui, sans-serif;
   --font-geist-mono: var(--font-geist-mono);
-  --font-cal-sans: 'DM Sans', sans-serif;
+  --font-cal-sans: 'Google Sans', 'Google Sans Display', ui-sans-serif, system-ui, sans-serif;
   --font-commit-mono: var(--font-geist-mono);
 
-  /* Table surface: used for table/card backgrounds to create separation from the sidebar in dark mode */
   --table-surface: var(--card);
 
-  /* Primary anchors – main panel & sidebar */
-  --background: oklch(0.9861 0.0034 67.78);
-  --sidebar: oklch(1 0 0);
+  --background: oklch(0.972 0.004 72);
+  --foreground: oklch(0.18 0.01 60);
 
-  /* derive all other colors as mixes of background and sidebar */
-  --foreground: color-mix(in oklch, var(--sidebar) 80%, var(--background) 20%);
-  --card: var(--background);
-  --card-foreground: var(--foreground);
-  --popover: var(--background);
-  --popover-foreground: var(--foreground);
+  --card: oklch(0.995 0.002 72);
+  --card-foreground: oklch(0.18 0.01 60);
 
-  --primary: color-mix(in oklch, var(--sidebar) 40%, var(--background) 60%);
-  --primary-foreground: color-mix(in oklch, var(--background) 90%, var(--sidebar) 10%);
+  --popover: oklch(0.995 0.002 72);
+  --popover-foreground: oklch(0.18 0.01 60);
 
-  --secondary: color-mix(in oklch, var(--sidebar) 20%, var(--background) 80%);
-  --secondary-foreground: var(--foreground);
+  --primary: oklch(0.24 0.02 55);
+  --primary-foreground: oklch(0.98 0.002 95);
 
-  --muted: color-mix(in oklch, var(--background) 80%, var(--sidebar) 20%);
-  --muted-foreground: color-mix(in oklch, var(--background) 30%, var(--sidebar) 70%);
+  --secondary: oklch(0.94 0.006 72);
+  --secondary-foreground: oklch(0.24 0.02 55);
 
-  --accent: color-mix(in oklch, var(--sidebar) 25%, var(--background) 75%);
-  --accent-foreground: var(--primary-foreground);
+  --muted: oklch(0.92 0.006 72);
+  --muted-foreground: oklch(0.38 0.02 60);
 
-  /* red/destructive keeps same hue but lifts luminance relative to sidebar */
-  --destructive: color-mix(in oklch, oklch(0.577 0.245 27.325) 40%, var(--sidebar) 60%);
-  --destructive-foreground: var(--destructive);
+  --accent: oklch(0.93 0.01 72);
+  --accent-foreground: oklch(0.24 0.02 55);
 
-  --border: color-mix(in oklch, var(--background) 70%, var(--sidebar) 30%);
-  --input: color-mix(in oklch, var(--background) 85%, var(--sidebar) 15%);
-  --ring: color-mix(in oklch, var(--sidebar) 40%, var(--background) 60%);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.98 0.01 27);
 
-  /* charts may stay fixed or derive similarly if desired */
-  --chart-1: color-mix(in oklch, var(--sidebar) 50%, var(--background) 50%);
-  --chart-2: color-mix(in oklch, var(--sidebar) 30%, var(--background) 70%);
-  --chart-3: color-mix(in oklch, var(--sidebar) 20%, var(--background) 80%);
-  --chart-4: color-mix(in oklch, var(--sidebar) 60%, var(--background) 40%);
-  --chart-5: color-mix(in oklch, var(--sidebar) 55%, var(--background) 45%);
+  --border: oklch(0.88 0.005 60);
+  --input: oklch(0.93 0.004 60);
+  --ring: oklch(0.72 0.02 55);
+
+  --sidebar: oklch(0.94 0.006 72);
+  --sidebar-foreground: oklch(0.20 0.01 60);
+
+  --sidebar-primary: oklch(0.24 0.02 55);
+  --sidebar-primary-foreground: oklch(0.98 0.002 95);
+
+  --sidebar-accent: oklch(0.88 0.015 72);
+  --sidebar-accent-foreground: oklch(0.24 0.02 55);
+
+  --sidebar-border: oklch(0.86 0.006 60);
+  --sidebar-ring: oklch(0.72 0.02 55);
+
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+
+  --bg-000: oklch(0.995 0.002 72);
+  --bg-0: oklch(0.972 0.004 72);
+  --bg-100: oklch(0.955 0.006 72);
+  --bg-200: oklch(0.92 0.01 72);
+  --bg-300: oklch(0.85 0.01 72);
+
+  --text-100: oklch(0.18 0.01 60);
+  --text-200: oklch(0.32 0.015 60);
+  --text-300: oklch(0.45 0.015 60);
+  --text-400: oklch(0.60 0.01 60);
+  --text-500: oklch(0.70 0.01 60);
+
+  --accent-hover: oklch(0.65 0.18 35);
+
+  --user-message-bg: oklch(0.94 0.015 72);
+  --user-message-selection: oklch(0.85 0.02 72);
 
   --radius: 0.45rem;
-  --sidebar-foreground: var(--foreground);
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: var(--accent);
-  --sidebar-accent-foreground: var(--accent-foreground);
-  --sidebar-border: var(--border);
-  --sidebar-ring: var(--ring);
-
-  --bg-0: var(--background);
-  --bg-000: var(--background);
-  --bg-100: color-mix(in oklch, var(--background) 90%, var(--sidebar) 10%);
-  --bg-200: color-mix(in oklch, var(--background) 80%, var(--sidebar) 20%);
-  --bg-300: color-mix(in oklch, var(--background) 70%, var(--sidebar) 30%);
-
-  --text-100: color-mix(in oklch, var(--sidebar) 80%, var(--background) 20%);
-  --text-200: color-mix(in oklch, var(--sidebar) 60%, var(--background) 40%);
-  --text-300: color-mix(in oklch, var(--sidebar) 40%, var(--background) 60%);
-  --text-400: color-mix(in oklch, var(--sidebar) 30%, var(--background) 70%);
-  --text-500: color-mix(in oklch, var(--sidebar) 20%, var(--background) 80%);
-
-  --accent-hover: color-mix(in oklch, var(--accent) 70%, var(--sidebar) 30%);
-  --user-message-bg: color-mix(in oklch, var(--background) 90%, var(--sidebar) 10%);
-  --user-message-selection: color-mix(in oklch, var(--background) 80%, var(--sidebar) 20%);
-
   --ease-silk: cubic-bezier(0.2, 0.0, 0, 1.0);
 }
 
