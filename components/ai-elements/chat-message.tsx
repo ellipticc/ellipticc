@@ -298,7 +298,7 @@ export function ChatMessage({ message, isLast, onCopy, onEdit, onFeedback, onReg
 
             {/* Message Content */}
             <div className={cn(
-                "flex flex-col min-w-0 transition-all duration-200 w-full max-w-[52rem]",
+                "flex flex-col min-w-0 transition-all duration-200 w-full max-w-[54rem]",
                 isUser
                     ? (isEditingPrompt ? "items-start !max-w-[none]" : "items-end ml-auto")
                     : "items-start"

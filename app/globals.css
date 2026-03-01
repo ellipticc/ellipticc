@@ -145,7 +145,7 @@ html {
   --sidebar-primary: oklch(0.24 0.02 55);
   --sidebar-primary-foreground: oklch(0.98 0.002 95);
 
-  --sidebar-accent: oklch(0.88 0.015 72);
+  --sidebar-accent: oklch(0.9568 0.0079 73.74);
   --sidebar-accent-foreground: oklch(0.24 0.02 55);
 
   --sidebar-border: oklch(0.86 0.006 60);

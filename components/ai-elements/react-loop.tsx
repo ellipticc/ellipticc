@@ -286,7 +286,12 @@ export const ReActLoop = memo(
     open,
     onOpenChange,
   }: ReActLoopProps) => {
-    const hasContent = !!(reasoning || (steps && steps.length > 0));
+    // Only show if there's actual content (non-empty reasoning or non-empty steps)
+    // Filter out empty think steps before checking
+    const hasThinkSteps = steps && steps.some(s => s.type === 'think' && s.content && s.content.trim().length > 0);
+    const hasNonThinkSteps = steps && steps.some(s => s.type !== 'think');
+    const hasReasoning = reasoning && reasoning.trim().length > 0;
+    const hasContent = !!(hasReasoning || hasThinkSteps || hasNonThinkSteps);
     if (!hasContent && !isStreaming) return null;
 
     const [isOpen, setIsOpen] = useControllableState<boolean>({
