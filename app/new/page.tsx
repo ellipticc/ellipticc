@@ -2033,7 +2033,7 @@ export default function AssistantPage() {
                                 </div>
                             )}
 
-                            <div className="flex justify-center w-full">
+                           <div className="flex justify-center w-full">
                                 <div className="max-w-5xl w-full px-4">
                                     <EnhancedPromptInput
                                         onSubmit={async (text, files, thinkingMode, searchMode, style) => {
@@ -2056,7 +2056,7 @@ export default function AssistantPage() {
                                         toolResultTokens={contextBreakdown?.toolResultTokens || 0}
                                     />
                                     {/* Disclaimer Text */}
-                                    <p className="text-xs text-center text-muted-foreground mb-8 select-none" aria-hidden="false">
+                                    <p className="text-xs text-center text-muted-foreground mt-2 select-none" aria-hidden="false">
                                         While we strive for accuracy, the AI may occasionally get things wrong.
                                     </p>
                                 </div>
