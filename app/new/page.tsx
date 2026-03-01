@@ -1871,7 +1871,7 @@ export default function AssistantPage() {
                 {isInitialLoading || (!isContentReady && messages.length === 0) ? (
                     // LOADING SKELETON - Simple pulsating paragraph (only on initial load)
                     <div className="flex-1 overflow-y-auto px-4 py-6 text-[12px]">
-                        <div className="max-w-[64rem] mx-auto space-y-2">
+                        <div className="max-w-[52rem] mx-auto space-y-2">
                             {/* Pulsating skeleton lines - simulating paragraph text */}
                             <Skeleton className="h-4 w-full animate-pulse" />
                             <Skeleton className="h-4 w-[95%] animate-pulse" style={{ animationDelay: '100ms' }} />
@@ -1952,7 +1952,7 @@ export default function AssistantPage() {
                                             id={`message-${message.id}`}
                                             className={cn("w-full flex justify-center animate-in fade-in duration-300", spacing)}
                                         >
-                                            <div className="w-full max-w-[64rem]">
+                                            <div className="w-full max-w-[52rem]">
                                                 {message.isCheckpoint ? (
                                                     <Checkpoint className="my-4">
                                                         <CheckpointIcon>
