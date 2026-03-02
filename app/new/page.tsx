@@ -901,6 +901,20 @@ export default function AssistantPage() {
                             continue;
                         }
 
+                        // Notify user when older messages were summarized to fit context window
+                        if (eventType === 'context-notice' && dataStr) {
+                            try {
+                                const data = JSON.parse(dataStr);
+                                toast.info(data.message || 'Conversation history was summarized.', {
+                                    description: data.suggestion,
+                                    duration: 3000,
+                                });
+                            } catch (e) {
+                                console.warn('Failed to parse context-notice event', dataStr, e);
+                            }
+                            continue;
+                        }
+
                         // Handle regular content events
                         if (dataStr === '[DONE]') {
                             console.log('[Stream] Received [DONE]. answerBuffer.length:', answerBuffer.length, 'reasoning.length:', assistantReasoningContent.length);
