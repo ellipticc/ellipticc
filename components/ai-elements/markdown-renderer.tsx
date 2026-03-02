@@ -211,6 +211,13 @@ const InternalMarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     // Normalise Windows line endings so all downstream regexes only see \n
     normalized = normalized.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
+    // Escape standalone currency dollar signs ($66,250 / $1.2B etc.) BEFORE the
+    // math-extraction pass. remark-math would otherwise steal them as delimiters.
+    // Pattern: $ immediately followed by a digit (currency), never $letter (math var).
+    // We do this on a non-math-aware pass first, then the mathRegex below handles
+    // legitimate $...$ math regions that already contain escaped chars.
+    normalized = normalized.replace(/\$(?=\d)/g, '\\$');
+
     // Preserve math regions and don't normalize inside them
     const mathRegex = /(\$\$[\s\S]*?\$\$|\$[^\$\n]*?\$)/g;
     const mathBlocks: string[] = [];
